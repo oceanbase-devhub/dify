@@ -1,8 +1,10 @@
 import enum
 import json
+import uuid
 
 from flask_login import UserMixin
 
+from sqlalchemy import func
 from extensions.ext_database import db
 
 from .types import StringUUID
@@ -20,7 +22,7 @@ class Account(UserMixin, db.Model):
     __tablename__ = "accounts"
     __table_args__ = (db.PrimaryKeyConstraint("id", name="account_pkey"), db.Index("account_email_idx", "email"))
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=True)
@@ -32,7 +34,7 @@ class Account(UserMixin, db.Model):
     last_login_at = db.Column(db.DateTime)
     last_login_ip = db.Column(db.String(255))
     last_active_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
-    status = db.Column(db.String(16), nullable=False, server_default=db.text("'active'::character varying"))
+    status = db.Column(db.String(16), nullable=False, default="active")
     initialized_at = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
     updated_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
@@ -174,11 +176,11 @@ class Tenant(db.Model):
     __tablename__ = "tenants"
     __table_args__ = (db.PrimaryKeyConstraint("id", name="tenant_pkey"),)
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     name = db.Column(db.String(255), nullable=False)
     encrypt_public_key = db.Column(db.Text)
-    plan = db.Column(db.String(255), nullable=False, server_default=db.text("'basic'::character varying"))
-    status = db.Column(db.String(255), nullable=False, server_default=db.text("'normal'::character varying"))
+    plan = db.Column(db.String(255), nullable=False, default="basic")
+    status = db.Column(db.String(255), nullable=False, default="normal")
     custom_config = db.Column(db.Text)
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
     updated_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
@@ -215,11 +217,11 @@ class TenantAccountJoin(db.Model):
         db.UniqueConstraint("tenant_id", "account_id", name="unique_tenant_account_join"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     account_id = db.Column(StringUUID, nullable=False)
-    current = db.Column(db.Boolean, nullable=False, server_default=db.text("false"))
-    role = db.Column(db.String(16), nullable=False, server_default="normal")
+    current = db.Column(db.Boolean, nullable=False, default=False)
+    role = db.Column(db.String(16), nullable=False, default="normal")
     invited_by = db.Column(StringUUID, nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
     updated_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
@@ -233,7 +235,7 @@ class AccountIntegrate(db.Model):
         db.UniqueConstraint("provider", "open_id", name="unique_provider_open_id"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     account_id = db.Column(StringUUID, nullable=False)
     provider = db.Column(db.String(16), nullable=False)
     open_id = db.Column(db.String(255), nullable=False)
@@ -253,7 +255,7 @@ class InvitationCode(db.Model):
     id = db.Column(db.Integer, nullable=False)
     batch = db.Column(db.String(255), nullable=False)
     code = db.Column(db.String(32), nullable=False)
-    status = db.Column(db.String(16), nullable=False, server_default=db.text("'unused'::character varying"))
+    status = db.Column(db.String(16), nullable=False, default="unused")
     used_at = db.Column(db.DateTime)
     used_by_tenant_id = db.Column(StringUUID)
     used_by_account_id = db.Column(StringUUID)
