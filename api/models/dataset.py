@@ -647,9 +647,7 @@ class DatasetKeywordTable(db.Model):
     id = db.Column(StringUUID, primary_key=True, default=lambda: uuid.uuid4())
     dataset_id = db.Column(StringUUID, nullable=False, unique=True)
     keyword_table = db.Column(db.Text, nullable=False)
-    data_source_type = db.Column(
-        db.String(255), nullable=False, default="database"
-    )
+    data_source_type = db.Column(db.String(255), nullable=False, default="database")
 
     @property
     def keyword_table_dict(self):
@@ -691,9 +689,7 @@ class Embedding(db.Model):
     )
 
     id = db.Column(StringUUID, primary_key=True, default=lambda: uuid.uuid4())
-    model_name = db.Column(
-        db.String(255), nullable=False, default="text-embedding-ada-002"
-    )
+    model_name = db.Column(db.String(255), nullable=False, default="text-embedding-ada-002")
     hash = db.Column(db.String(64), nullable=False)
     embedding = db.Column(db.LargeBinary, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
