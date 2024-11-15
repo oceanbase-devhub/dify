@@ -1108,9 +1108,7 @@ class MessageFile(db.Model):
     upload_file_id: Mapped[Optional[str]] = db.Column(StringUUID, nullable=True)
     created_by_role: Mapped[str] = db.Column(db.String(255), nullable=False)
     created_by: Mapped[str] = db.Column(StringUUID, nullable=False)
-    created_at: Mapped[datetime] = db.Column(
-        db.DateTime, nullable=False, server_default=func.current_timestamp()
-    )
+    created_at: Mapped[datetime] = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
 
 
 class MessageAnnotation(db.Model):
@@ -1366,13 +1364,9 @@ class UploadFile(db.Model):
     size: Mapped[int] = db.Column(db.Integer, nullable=False)
     extension: Mapped[str] = db.Column(db.String(255), nullable=False)
     mime_type: Mapped[str] = db.Column(db.String(255), nullable=True)
-    created_by_role: Mapped[str] = db.Column(
-        db.String(255), nullable=False, default="account"
-    )
+    created_by_role: Mapped[str] = db.Column(db.String(255), nullable=False, default="account")
     created_by: Mapped[str] = db.Column(StringUUID, nullable=False)
-    created_at: Mapped[datetime] = db.Column(
-        db.DateTime, nullable=False, server_default=func.current_timestamp()
-    )
+    created_at: Mapped[datetime] = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
     used: Mapped[bool] = db.Column(db.Boolean, nullable=False, server_default=db.text("false"))
     used_by: Mapped[str | None] = db.Column(StringUUID, nullable=True)
     used_at: Mapped[datetime | None] = db.Column(db.DateTime, nullable=True)

@@ -2,8 +2,6 @@ import json
 import uuid
 from enum import Enum
 
-from sqlalchemy import func
-
 from extensions.ext_database import db
 
 from .types import StringUUID

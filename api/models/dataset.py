@@ -843,6 +843,4 @@ class ExternalKnowledgeBindings(db.Model):
 
 # MySQL does not support indexing JSON column directly (https://dev.mysql.com/doc/refman/8.0/en/create-table-secondary-indexes.html#json-column-indirect-index)
 if dify_config.SQLALCHEMY_DATABASE_URI_SCHEME == "postgresql":
-    Dataset.__table_args__ += (
-        db.Index("retrieval_model_idx", "retrieval_model", postgresql_using="gin"),
-    )
+    Dataset.__table_args__ += (db.Index("retrieval_model_idx", "retrieval_model", postgresql_using="gin"),)
