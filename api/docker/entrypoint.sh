@@ -4,7 +4,12 @@ set -e
 
 if [[ "${MIGRATION_ENABLED}" == "true" ]]; then
   echo "Running migrations"
-  flask upgrade-db
+  if [[ "${SQLALCHEMY_DATABASE_URI_SCHEME}" == "mysql+pymysql" ]]; then 
+    flask upgrade-db --dir migrations_new
+  else
+    flask upgrade-db
+    flask upgrade-db --dir migrations_new
+  fi
 fi
 
 if [[ "${MODE}" == "worker" ]]; then
