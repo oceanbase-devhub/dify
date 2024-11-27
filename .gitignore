@@ -176,6 +176,7 @@ docker/volumes/pgvecto_rs/data/*
 docker/volumes/couchbase/*
 docker/volumes/oceanbase/*
 !docker/volumes/oceanbase/init.d
+docker/volumes/mysql/*
 
 docker/nginx/conf.d/default.conf
 docker/nginx/ssl/*
