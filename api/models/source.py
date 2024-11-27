@@ -1,10 +1,9 @@
 import json
-
-from sqlalchemy.dialects.postgresql import JSONB
+import uuid
 
 from extensions.ext_database import db
 
-from .types import StringUUID
+from .types import AdjustedJSON, PostgresJSONIndex, StringUUID
 
 
 class DataSourceOauthBinding(db.Model):
@@ -12,14 +11,14 @@ class DataSourceOauthBinding(db.Model):
     __table_args__ = (
         db.PrimaryKeyConstraint("id", name="source_binding_pkey"),
         db.Index("source_binding_tenant_id_idx", "tenant_id"),
-        db.Index("source_info_idx", "source_info", postgresql_using="gin"),
+        PostgresJSONIndex("source_info_idx", "source_info", postgresql_using="gin"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     access_token = db.Column(db.String(255), nullable=False)
     provider = db.Column(db.String(255), nullable=False)
-    source_info = db.Column(JSONB, nullable=False)
+    source_info = db.Column(AdjustedJSON, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
     updated_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
     disabled = db.Column(db.Boolean, nullable=True, server_default=db.text("false"))
@@ -33,7 +32,7 @@ class DataSourceApiKeyAuthBinding(db.Model):
         db.Index("data_source_api_key_auth_binding_provider_idx", "provider"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     category = db.Column(db.String(255), nullable=False)
     provider = db.Column(db.String(255), nullable=False)

@@ -1,3 +1,4 @@
+import uuid
 from enum import Enum
 
 from extensions.ext_database import db
@@ -49,15 +50,15 @@ class Provider(db.Model):
         ),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     provider_name = db.Column(db.String(255), nullable=False)
-    provider_type = db.Column(db.String(40), nullable=False, server_default=db.text("'custom'::character varying"))
+    provider_type = db.Column(db.String(40), nullable=False, default="custom")
     encrypted_config = db.Column(db.Text, nullable=True)
     is_valid = db.Column(db.Boolean, nullable=False, server_default=db.text("false"))
     last_used = db.Column(db.DateTime, nullable=True)
 
-    quota_type = db.Column(db.String(40), nullable=True, server_default=db.text("''::character varying"))
+    quota_type = db.Column(db.String(40), nullable=True, default="")
     quota_limit = db.Column(db.BigInteger, nullable=True)
     quota_used = db.Column(db.BigInteger, default=0)
 
@@ -102,7 +103,7 @@ class ProviderModel(db.Model):
         ),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     provider_name = db.Column(db.String(255), nullable=False)
     model_name = db.Column(db.String(255), nullable=False)
@@ -120,7 +121,7 @@ class TenantDefaultModel(db.Model):
         db.Index("tenant_default_model_tenant_id_provider_type_idx", "tenant_id", "provider_name", "model_type"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     provider_name = db.Column(db.String(255), nullable=False)
     model_name = db.Column(db.String(255), nullable=False)
@@ -136,7 +137,7 @@ class TenantPreferredModelProvider(db.Model):
         db.Index("tenant_preferred_model_provider_tenant_provider_idx", "tenant_id", "provider_name"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     provider_name = db.Column(db.String(255), nullable=False)
     preferred_provider_type = db.Column(db.String(40), nullable=False)
@@ -151,7 +152,7 @@ class ProviderOrder(db.Model):
         db.Index("provider_order_tenant_provider_idx", "tenant_id", "provider_name"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     provider_name = db.Column(db.String(255), nullable=False)
     account_id = db.Column(StringUUID, nullable=False)
@@ -161,7 +162,7 @@ class ProviderOrder(db.Model):
     quantity = db.Column(db.Integer, nullable=False, server_default=db.text("1"))
     currency = db.Column(db.String(40))
     total_amount = db.Column(db.Integer)
-    payment_status = db.Column(db.String(40), nullable=False, server_default=db.text("'wait_pay'::character varying"))
+    payment_status = db.Column(db.String(40), nullable=False, default="wait_pay")
     paid_at = db.Column(db.DateTime)
     pay_failed_at = db.Column(db.DateTime)
     refunded_at = db.Column(db.DateTime)
@@ -180,7 +181,7 @@ class ProviderModelSetting(db.Model):
         db.Index("provider_model_setting_tenant_provider_model_idx", "tenant_id", "provider_name", "model_type"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     provider_name = db.Column(db.String(255), nullable=False)
     model_name = db.Column(db.String(255), nullable=False)
@@ -202,7 +203,7 @@ class LoadBalancingModelConfig(db.Model):
         db.Index("load_balancing_model_config_tenant_provider_model_idx", "tenant_id", "provider_name", "model_type"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     provider_name = db.Column(db.String(255), nullable=False)
     model_name = db.Column(db.String(255), nullable=False)

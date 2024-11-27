@@ -1,4 +1,5 @@
 import json
+import uuid
 from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 from enum import Enum, StrEnum
@@ -95,7 +96,7 @@ class Workflow(db.Model):
         db.Index("workflow_version_idx", "tenant_id", "app_id", "version"),
     )
 
-    id: Mapped[str] = mapped_column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id: Mapped[str] = mapped_column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id: Mapped[str] = mapped_column(StringUUID, nullable=False)
     app_id: Mapped[str] = mapped_column(StringUUID, nullable=False)
     type: Mapped[str] = mapped_column(db.String(255), nullable=False)
@@ -110,11 +111,9 @@ class Workflow(db.Model):
     updated_at: Mapped[datetime] = mapped_column(
         sa.DateTime, nullable=False, default=datetime.now(tz=UTC), server_onupdate=func.current_timestamp()
     )
-    _environment_variables: Mapped[str] = mapped_column(
-        "environment_variables", db.Text, nullable=False, server_default="{}"
-    )
+    _environment_variables: Mapped[str] = mapped_column("environment_variables", db.Text, nullable=False, default="{}")
     _conversation_variables: Mapped[str] = mapped_column(
-        "conversation_variables", db.Text, nullable=False, server_default="{}"
+        "conversation_variables", db.Text, nullable=False, default="{}"
     )
 
     def __init__(
@@ -383,7 +382,7 @@ class WorkflowRun(db.Model):
         db.Index("workflow_run_tenant_app_sequence_idx", "tenant_id", "app_id", "sequence_number"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     app_id = db.Column(StringUUID, nullable=False)
     sequence_number = db.Column(db.Integer, nullable=False)
@@ -607,7 +606,7 @@ class WorkflowNodeExecution(db.Model):
         ),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     app_id = db.Column(StringUUID, nullable=False)
     workflow_id = db.Column(StringUUID, nullable=False)
@@ -736,7 +735,7 @@ class WorkflowAppLog(db.Model):
         db.Index("workflow_app_log_app_idx", "tenant_id", "app_id"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     app_id = db.Column(StringUUID, nullable=False)
     workflow_id = db.Column(StringUUID, nullable=False)

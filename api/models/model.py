@@ -63,17 +63,17 @@ class App(db.Model):
     __tablename__ = "apps"
     __table_args__ = (db.PrimaryKeyConstraint("id", name="app_pkey"), db.Index("app_tenant_id_idx", "tenant_id"))
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id: Mapped[str] = db.Column(StringUUID, nullable=False)
     name = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text, nullable=False, server_default=db.text("''::character varying"))
+    description = db.Column(db.Text, nullable=False, default="")
     mode = db.Column(db.String(255), nullable=False)
     icon_type = db.Column(db.String(255), nullable=True)  # image, emoji
     icon = db.Column(db.String(255))
     icon_background = db.Column(db.String(255))
     app_model_config_id = db.Column(StringUUID, nullable=True)
     workflow_id = db.Column(StringUUID, nullable=True)
-    status = db.Column(db.String(255), nullable=False, server_default=db.text("'normal'::character varying"))
+    status = db.Column(db.String(255), nullable=False, default="normal")
     enable_site = db.Column(db.Boolean, nullable=False)
     enable_api = db.Column(db.Boolean, nullable=False)
     api_rpm = db.Column(db.Integer, nullable=False, server_default=db.text("0"))
@@ -219,7 +219,7 @@ class AppModelConfig(db.Model):
     __tablename__ = "app_model_configs"
     __table_args__ = (db.PrimaryKeyConstraint("id", name="app_model_config_pkey"), db.Index("app_app_id_idx", "app_id"))
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     app_id = db.Column(StringUUID, nullable=False)
     provider = db.Column(db.String(255), nullable=True)
     model_id = db.Column(db.String(255), nullable=True)
@@ -241,7 +241,7 @@ class AppModelConfig(db.Model):
     agent_mode = db.Column(db.Text)
     sensitive_word_avoidance = db.Column(db.Text)
     retriever_resource = db.Column(db.Text)
-    prompt_type = db.Column(db.String(255), nullable=False, server_default=db.text("'simple'::character varying"))
+    prompt_type = db.Column(db.String(255), nullable=False, default="simple")
     chat_prompt_config = db.Column(db.Text)
     completion_prompt_config = db.Column(db.Text)
     dataset_configs = db.Column(db.Text)
@@ -470,7 +470,7 @@ class RecommendedApp(db.Model):
         db.Index("recommended_app_is_listed_idx", "is_listed", "language"),
     )
 
-    id = db.Column(StringUUID, primary_key=True, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, primary_key=True, default=lambda: uuid.uuid4())
     app_id = db.Column(StringUUID, nullable=False)
     description = db.Column(db.JSON, nullable=False)
     copyright = db.Column(db.String(255), nullable=False)
@@ -480,7 +480,7 @@ class RecommendedApp(db.Model):
     position = db.Column(db.Integer, nullable=False, default=0)
     is_listed = db.Column(db.Boolean, nullable=False, default=True)
     install_count = db.Column(db.Integer, nullable=False, default=0)
-    language = db.Column(db.String(255), nullable=False, server_default=db.text("'en-US'::character varying"))
+    language = db.Column(db.String(255), nullable=False, default="en-US")
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
     updated_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
 
@@ -499,7 +499,7 @@ class InstalledApp(db.Model):
         db.UniqueConstraint("tenant_id", "app_id", name="unique_tenant_app"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     app_id = db.Column(StringUUID, nullable=False)
     app_owner_tenant_id = db.Column(StringUUID, nullable=False)
@@ -526,7 +526,7 @@ class Conversation(db.Model):
         db.Index("conversation_app_from_user_idx", "app_id", "from_source", "from_end_user_id"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     app_id = db.Column(StringUUID, nullable=False)
     app_model_config_id = db.Column(StringUUID, nullable=True)
     model_provider = db.Column(db.String(255), nullable=True)
@@ -722,7 +722,7 @@ class Message(db.Model):
         db.Index("message_created_at_idx", "created_at"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     app_id = db.Column(StringUUID, nullable=False)
     model_provider = db.Column(db.String(255), nullable=True)
     model_id = db.Column(db.String(255), nullable=True)
@@ -742,7 +742,7 @@ class Message(db.Model):
     provider_response_latency = db.Column(db.Float, nullable=False, server_default=db.text("0"))
     total_price = db.Column(db.Numeric(10, 7))
     currency = db.Column(db.String(255), nullable=False)
-    status = db.Column(db.String(255), nullable=False, server_default=db.text("'normal'::character varying"))
+    status = db.Column(db.String(255), nullable=False, default="normal")
     error = db.Column(db.Text)
     message_metadata = db.Column(db.Text)
     invoke_from: Mapped[Optional[str]] = db.Column(db.String(255), nullable=True)
@@ -1053,7 +1053,7 @@ class MessageFeedback(db.Model):
         db.Index("message_feedback_conversation_idx", "conversation_id", "from_source", "rating"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     app_id = db.Column(StringUUID, nullable=False)
     conversation_id = db.Column(StringUUID, nullable=False)
     message_id = db.Column(StringUUID, nullable=False)
@@ -1100,7 +1100,7 @@ class MessageFile(db.Model):
         self.created_by_role = created_by_role.value
         self.created_by = created_by
 
-    id: Mapped[str] = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id: Mapped[str] = db.Column(StringUUID, default=lambda: uuid.uuid4())
     message_id: Mapped[str] = db.Column(StringUUID, nullable=False)
     type: Mapped[str] = db.Column(db.String(255), nullable=False)
     transfer_method: Mapped[str] = db.Column(db.String(255), nullable=False)
@@ -1123,7 +1123,7 @@ class MessageAnnotation(db.Model):
         db.Index("message_annotation_message_idx", "message_id"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     app_id = db.Column(StringUUID, nullable=False)
     conversation_id = db.Column(StringUUID, db.ForeignKey("conversations.id"), nullable=True)
     message_id = db.Column(StringUUID, nullable=True)
@@ -1155,7 +1155,7 @@ class AppAnnotationHitHistory(db.Model):
         db.Index("app_annotation_hit_histories_message_idx", "message_id"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     app_id = db.Column(StringUUID, nullable=False)
     annotation_id = db.Column(StringUUID, nullable=False)
     source = db.Column(db.Text, nullable=False)
@@ -1190,7 +1190,7 @@ class AppAnnotationSetting(db.Model):
         db.Index("app_annotation_settings_app_idx", "app_id"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     app_id = db.Column(StringUUID, nullable=False)
     score_threshold = db.Column(Float, nullable=False, server_default=db.text("0"))
     collection_binding_id = db.Column(StringUUID, nullable=False)
@@ -1238,7 +1238,7 @@ class OperationLog(db.Model):
         db.Index("operation_log_account_action_idx", "tenant_id", "account_id", "action"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     account_id = db.Column(StringUUID, nullable=False)
     action = db.Column(db.String(255), nullable=False)
@@ -1256,7 +1256,7 @@ class EndUser(UserMixin, db.Model):
         db.Index("end_user_tenant_session_id_idx", "tenant_id", "session_id", "type"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     app_id = db.Column(StringUUID, nullable=True)
     type = db.Column(db.String(255), nullable=False)
@@ -1276,7 +1276,7 @@ class Site(db.Model):
         db.Index("site_code_idx", "code", "status"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     app_id = db.Column(StringUUID, nullable=False)
     title = db.Column(db.String(255), nullable=False)
     icon_type = db.Column(db.String(255), nullable=True)
@@ -1294,7 +1294,7 @@ class Site(db.Model):
     customize_domain = db.Column(db.String(255))
     customize_token_strategy = db.Column(db.String(255), nullable=False)
     prompt_public = db.Column(db.Boolean, nullable=False, server_default=db.text("false"))
-    status = db.Column(db.String(255), nullable=False, server_default=db.text("'normal'::character varying"))
+    status = db.Column(db.String(255), nullable=False, default="normal")
     created_by = db.Column(StringUUID, nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
     updated_by = db.Column(StringUUID, nullable=True)
@@ -1334,7 +1334,7 @@ class ApiToken(db.Model):
         db.Index("api_token_tenant_idx", "tenant_id", "type"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     app_id = db.Column(StringUUID, nullable=True)
     tenant_id = db.Column(StringUUID, nullable=True)
     type = db.Column(db.String(16), nullable=False)
@@ -1359,7 +1359,7 @@ class UploadFile(db.Model):
         db.Index("upload_file_tenant_idx", "tenant_id"),
     )
 
-    id: Mapped[str] = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id: Mapped[str] = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id: Mapped[str] = db.Column(StringUUID, nullable=False)
     storage_type: Mapped[str] = db.Column(db.String(255), nullable=False)
     key: Mapped[str] = db.Column(db.String(255), nullable=False)
@@ -1367,9 +1367,7 @@ class UploadFile(db.Model):
     size: Mapped[int] = db.Column(db.Integer, nullable=False)
     extension: Mapped[str] = db.Column(db.String(255), nullable=False)
     mime_type: Mapped[str] = db.Column(db.String(255), nullable=True)
-    created_by_role: Mapped[str] = db.Column(
-        db.String(255), nullable=False, server_default=db.text("'account'::character varying")
-    )
+    created_by_role: Mapped[str] = db.Column(db.String(255), nullable=False, default="account")
     created_by: Mapped[str] = db.Column(StringUUID, nullable=False)
     created_at: Mapped[datetime] = db.Column(
         db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)")
@@ -1423,7 +1421,7 @@ class ApiRequest(db.Model):
         db.Index("api_request_token_idx", "tenant_id", "api_token_id"),
     )
 
-    id = db.Column(StringUUID, nullable=False, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, nullable=False, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=False)
     api_token_id = db.Column(StringUUID, nullable=False)
     path = db.Column(db.String(255), nullable=False)
@@ -1440,7 +1438,7 @@ class MessageChain(db.Model):
         db.Index("message_chain_message_id_idx", "message_id"),
     )
 
-    id = db.Column(StringUUID, nullable=False, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, nullable=False, default=lambda: uuid.uuid4())
     message_id = db.Column(StringUUID, nullable=False)
     type = db.Column(db.String(255), nullable=False)
     input = db.Column(db.Text, nullable=True)
@@ -1456,14 +1454,14 @@ class MessageAgentThought(db.Model):
         db.Index("message_agent_thought_message_chain_id_idx", "message_chain_id"),
     )
 
-    id = db.Column(StringUUID, nullable=False, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, nullable=False, default=lambda: uuid.uuid4())
     message_id = db.Column(StringUUID, nullable=False)
     message_chain_id = db.Column(StringUUID, nullable=True)
     position = db.Column(db.Integer, nullable=False)
     thought = db.Column(db.Text, nullable=True)
     tool = db.Column(db.Text, nullable=True)
-    tool_labels_str = db.Column(db.Text, nullable=False, server_default=db.text("'{}'::text"))
-    tool_meta_str = db.Column(db.Text, nullable=False, server_default=db.text("'{}'::text"))
+    tool_labels_str = db.Column(db.Text, nullable=False, default="{}")
+    tool_meta_str = db.Column(db.Text, nullable=False, default="{}")
     tool_input = db.Column(db.Text, nullable=True)
     observation = db.Column(db.Text, nullable=True)
     # plugin_id = db.Column(StringUUID, nullable=True)  ## for future design
@@ -1479,9 +1477,9 @@ class MessageAgentThought(db.Model):
     answer_price_unit = db.Column(db.Numeric(10, 7), nullable=False, server_default=db.text("0.001"))
     tokens = db.Column(db.Integer, nullable=True)
     total_price = db.Column(db.Numeric, nullable=True)
-    currency = db.Column(db.String, nullable=True)
+    currency = db.Column(db.String(255), nullable=True)
     latency = db.Column(db.Float, nullable=True)
-    created_by_role = db.Column(db.String, nullable=False)
+    created_by_role = db.Column(db.String(255), nullable=False)
     created_by = db.Column(StringUUID, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.current_timestamp())
 
@@ -1567,7 +1565,7 @@ class DatasetRetrieverResource(db.Model):
         db.Index("dataset_retriever_resource_message_id_idx", "message_id"),
     )
 
-    id = db.Column(StringUUID, nullable=False, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, nullable=False, default=lambda: uuid.uuid4())
     message_id = db.Column(StringUUID, nullable=False)
     position = db.Column(db.Integer, nullable=False)
     dataset_id = db.Column(StringUUID, nullable=False)
@@ -1597,7 +1595,7 @@ class Tag(db.Model):
 
     TAG_TYPE_LIST = ["knowledge", "app"]
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=True)
     type = db.Column(db.String(16), nullable=False)
     name = db.Column(db.String(255), nullable=False)
@@ -1613,7 +1611,7 @@ class TagBinding(db.Model):
         db.Index("tag_bind_tag_id_idx", "tag_id"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     tenant_id = db.Column(StringUUID, nullable=True)
     tag_id = db.Column(StringUUID, nullable=True)
     target_id = db.Column(StringUUID, nullable=True)
@@ -1628,7 +1626,7 @@ class TraceAppConfig(db.Model):
         db.Index("trace_app_config_app_id_idx", "app_id"),
     )
 
-    id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    id = db.Column(StringUUID, default=lambda: uuid.uuid4())
     app_id = db.Column(StringUUID, nullable=False)
     tracing_provider = db.Column(db.String(255), nullable=True)
     tracing_config = db.Column(db.JSON, nullable=True)
