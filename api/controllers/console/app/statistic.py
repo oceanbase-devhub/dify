@@ -15,17 +15,18 @@ from libs.login import login_required
 from models.model import AppMode
 
 
-def date_convert(field: str = 'created_at') -> str:
+def date_convert(field: str = "created_at") -> str:
     dialect = db.engine.dialect.name
-        
-    if dialect == 'mysql':
+
+    if dialect == "mysql":
         date_convert = f"CONVERT_TZ({field}, 'UTC', :tz)"
-    elif dialect == 'postgresql':
+    elif dialect == "postgresql":
         date_convert = f"DATE_TRUNC('day', {field} AT TIME ZONE 'UTC' AT TIME ZONE :tz )"
-    
+
     sql_query = f"""SELECT
     DATE({date_convert}) AS date,"""
     return sql_query
+
 
 class DailyMessageStatistic(Resource):
     @setup_required
@@ -40,12 +41,15 @@ class DailyMessageStatistic(Resource):
         parser.add_argument("end", type=DatetimeString("%Y-%m-%d %H:%M"), location="args")
         args = parser.parse_args()
 
-        sql_query = date_convert() + """
+        sql_query = (
+            date_convert()
+            + """
     COUNT(*) AS message_count
 FROM
     messages
 WHERE
     app_id = :app_id"""
+        )
         arg_dict = {"tz": account.timezone, "app_id": app_model.id}
 
         timezone = pytz.timezone(account.timezone)
@@ -96,12 +100,15 @@ class DailyConversationStatistic(Resource):
         parser.add_argument("end", type=DatetimeString("%Y-%m-%d %H:%M"), location="args")
         args = parser.parse_args()
 
-        sql_query = date_convert() + """
+        sql_query = (
+            date_convert()
+            + """
     COUNT(DISTINCT messages.conversation_id) AS conversation_count
 FROM
     messages
 WHERE
     app_id = :app_id"""
+        )
         arg_dict = {"tz": account.timezone, "app_id": app_model.id}
 
         timezone = pytz.timezone(account.timezone)
@@ -152,12 +159,15 @@ class DailyTerminalsStatistic(Resource):
         parser.add_argument("end", type=DatetimeString("%Y-%m-%d %H:%M"), location="args")
         args = parser.parse_args()
 
-        sql_query = date_convert() + """
+        sql_query = (
+            date_convert()
+            + """
     COUNT(DISTINCT messages.from_end_user_id) AS terminal_count
 FROM
     messages
 WHERE
     app_id = :app_id"""
+        )
         arg_dict = {"tz": account.timezone, "app_id": app_model.id}
 
         timezone = pytz.timezone(account.timezone)
@@ -208,13 +218,16 @@ class DailyTokenCostStatistic(Resource):
         parser.add_argument("end", type=DatetimeString("%Y-%m-%d %H:%M"), location="args")
         args = parser.parse_args()
 
-        sql_query = date_convert() + """
+        sql_query = (
+            date_convert()
+            + """
     (SUM(messages.message_tokens) + SUM(messages.answer_tokens)) AS token_count,
     SUM(total_price) AS total_price
 FROM
     messages
 WHERE
     app_id = :app_id"""
+        )
         arg_dict = {"tz": account.timezone, "app_id": app_model.id}
 
         timezone = pytz.timezone(account.timezone)
@@ -267,7 +280,9 @@ class AverageSessionInteractionStatistic(Resource):
         parser.add_argument("end", type=DatetimeString("%Y-%m-%d %H:%M"), location="args")
         args = parser.parse_args()
 
-        sql_query = date_convert("c.created_at") + """
+        sql_query = (
+            date_convert("c.created_at")
+            + """
     AVG(subquery.message_count) AS interactions
 FROM
     (
@@ -282,6 +297,7 @@ FROM
         WHERE
             c.override_model_configs IS NULL
             AND c.app_id = :app_id"""
+        )
         arg_dict = {"tz": account.timezone, "app_id": app_model.id}
 
         timezone = pytz.timezone(account.timezone)
@@ -343,7 +359,9 @@ class UserSatisfactionRateStatistic(Resource):
         parser.add_argument("end", type=DatetimeString("%Y-%m-%d %H:%M"), location="args")
         args = parser.parse_args()
 
-        sql_query = date_convert("m.created_at") + """
+        sql_query = (
+            date_convert("m.created_at")
+            + """
     COUNT(m.id) AS message_count,
     COUNT(mf.id) AS feedback_count
 FROM
@@ -353,6 +371,7 @@ LEFT JOIN
     ON mf.message_id=m.id AND mf.rating='like'
 WHERE
     m.app_id = :app_id"""
+        )
         arg_dict = {"tz": account.timezone, "app_id": app_model.id}
 
         timezone = pytz.timezone(account.timezone)
@@ -408,12 +427,15 @@ class AverageResponseTimeStatistic(Resource):
         parser.add_argument("end", type=DatetimeString("%Y-%m-%d %H:%M"), location="args")
         args = parser.parse_args()
 
-        sql_query = date_convert() + """
+        sql_query = (
+            date_convert()
+            + """
     AVG(provider_response_latency) AS latency
 FROM
     messages
 WHERE
     app_id = :app_id"""
+        )
         arg_dict = {"tz": account.timezone, "app_id": app_model.id}
 
         timezone = pytz.timezone(account.timezone)
@@ -464,7 +486,9 @@ class TokensPerSecondStatistic(Resource):
         parser.add_argument("end", type=DatetimeString("%Y-%m-%d %H:%M"), location="args")
         args = parser.parse_args()
 
-        sql_query = date_convert() + """
+        sql_query = (
+            date_convert()
+            + """
     CASE
         WHEN SUM(provider_response_latency) = 0 THEN 0
         ELSE (SUM(answer_tokens) / SUM(provider_response_latency))
@@ -473,6 +497,7 @@ FROM
     messages
 WHERE
     app_id = :app_id"""
+        )
         arg_dict = {"tz": account.timezone, "app_id": app_model.id}
 
         timezone = pytz.timezone(account.timezone)
