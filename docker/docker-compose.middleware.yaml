@@ -3,6 +3,8 @@ services:
   db:
     image: postgres:15-alpine
     restart: always
+    profiles:
+      - pg
     env_file:
       - ./middleware.env
     environment:

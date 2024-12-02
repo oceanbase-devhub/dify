@@ -292,7 +292,7 @@ x-shared-env: &shared-api-worker-env
 services:
   # API service
   api:
-    image: quay.io/powerfooi/dify:0.12.1
+    image: quay.io/oceanbase-devhub/dify-api:0.12.1
     restart: always
     environment:
       # Use the shared environment variables.
@@ -311,7 +311,7 @@ services:
   # worker service
   # The Celery worker for processing the queue.
   worker:
-    image: quay.io/powerfooi/dify:0.12.1
+    image: quay.io/oceanbase-devhub/dify-api:0.12.1
     restart: always
     environment:
       # Use the shared environment variables.
@@ -329,7 +329,7 @@ services:
 
   # Frontend web application.
   web:
-    image: langgenius/dify-web:0.12.1
+    image: quay.io/oceanbase-devhub/dify-web:0.12.1
     restart: always
     environment:
       CONSOLE_API_URL: ${CONSOLE_API_URL:-}
@@ -366,7 +366,7 @@ services:
 
   # The redis cache.
   redis:
-    image: redis:6-alpine
+    image: quay.io/oceanbase-devhub/redis:6-alpine
     restart: always
     environment:
       REDISCLI_AUTH: ${REDIS_PASSWORD:-difyai123456}
@@ -380,7 +380,7 @@ services:
 
   # The DifySandbox
   sandbox:
-    image: langgenius/dify-sandbox:0.2.10
+    image: quay.io/oceanbase-devhub/dify-sandbox:0.2.10
     restart: always
     environment:
       # The DifySandbox configurations
@@ -404,7 +404,7 @@ services:
   # for more information, please refer to
   # https://docs.dify.ai/learn-more/faq/install-faq#id-18.-why-is-ssrf_proxy-needed
   ssrf_proxy:
-    image: ubuntu/squid:latest
+    image: quay.io/oceanbase-devhub/squid:latest
     restart: always
     volumes:
       - ./ssrf_proxy/squid.conf.template:/etc/squid/squid.conf.template
@@ -449,7 +449,7 @@ services:
   # The nginx reverse proxy.
   # used for reverse proxying the API service and Web service.
   nginx:
-    image: nginx:latest
+    image: quay.io/oceanbase-devhub/nginx:latest
     restart: always
     volumes:
       - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template
@@ -495,7 +495,6 @@ services:
   weaviate:
     image: semitechnologies/weaviate:1.19.0
     profiles:
-      - ''
       - weaviate
     restart: always
     volumes:
