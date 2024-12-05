@@ -133,14 +133,14 @@ function test_connection() {
 
     # 如果没有 mysql 命令，使用 docker 运行测试
     if ! command -v mysql &>/dev/null; then
-        docker run --rm mysql mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME" -p"$DB_PASSWORD" -D$DB_DATABASE -e "SHOW TABLES"
+        docker run --rm quay.io/oceanbase-devhub/mysql mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME" -p"$DB_PASSWORD" -D$DB_DATABASE -e "SHOW TABLES"
         if [[ $? != 0 ]]; then
             print_message "error" "$DB_DATABASE 数据库连接失败!\n"
         else
             print_message "success" "$DB_DATABASE 数据库连接成功~\n"
         fi
 
-        docker run --rm mysql mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME" -p"$DB_PASSWORD" -D$OCEANBASE_VECTOR_DATABASE -e "SHOW TABLES"
+        docker run --rm quay.io/oceanbase-devhub/mysql mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME" -p"$DB_PASSWORD" -D$OCEANBASE_VECTOR_DATABASE -e "SHOW TABLES"
         if [[ $? != 0 ]]; then
             print_message "error" "$OCEANBASE_VECTOR_DATABASE 数据库连接失败!\n"
         else
