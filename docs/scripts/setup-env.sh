@@ -117,7 +117,7 @@ current_db_name=$(get_env_value "DB_DATABASE" "dify")
 current_db_vector_name=$(get_env_value "OCEANBASE_VECTOR_DATABASE" "test")
 
 # 获取数据库配置信息
-print_message "info" "\n请输入数据库配置信息："
+print_message "info" "请输入数据库配置信息："
 DB_HOST=$(get_user_input "数据库主机地址" "$current_db_host")
 DB_PORT=$(get_user_input "数据库端口" "$current_db_port")
 DB_USERNAME=$(get_user_input "数据库用户名" "$current_db_user")
