@@ -40,6 +40,13 @@ git clone https://github.com/oceanbase-devhub/dify.git
 git clone https://gitee.com/oceanbase-devhub/dify.git
 ```
 
+为保证 dify 目录的代码是最新的状态，需要执行 `git pull` 命令，拉取最新的代码。
+
+```bash
+cd dify
+git pull
+```
+
 ### 3. 拉取 Docker 镜像
 
 进入到 dify 的工作目录中的`docker`目录下，执行`docker compose --profile workshop pull`，拉取所需要的镜像，这些镜像不一定都能够顺利拉取，请大家先自行寻求解决方案。
@@ -47,7 +54,7 @@ git clone https://gitee.com/oceanbase-devhub/dify.git
 参考命令
 
 ```bash
-cd dify/docker
+cd docker
 docker compose --profile workshop pull
 ```
 
