@@ -109,6 +109,15 @@ update_env() {
         else
             sed -i "s|^${key}=.*|${key}=${value}|" "$file"
         fi
+        if [ $? -ne 0 ]; then
+            # 更新失败，环境变量值中可能有特殊字符
+            if [ "$(uname)" == "Darwin" ]; then
+                sed -i '' "s|^${key}=.*|#${key}=|" "$file" 2&1 >/dev/null
+            else
+                sed -i "s|^${key}=.*|#${key}=|" "$file" 2&1 >/dev/null
+            fi
+            echo "${key}=${value}" >>"$file"
+        fi
     else
         # 如果配置项不存在，则添加它
         echo "${key}=${value}" >>"$file"
@@ -173,6 +182,7 @@ while [[ $# -gt 0 ]]; do
         exit 0
         ;;
     -t | --test)
+        print_message "info" "检测数据库连接:\n"
         test_connection "$current_db_host" "$current_db_port" "$current_db_user" "$current_db_password" "$current_db_name" "$current_db_vector_name"
         exit 0
         ;;
