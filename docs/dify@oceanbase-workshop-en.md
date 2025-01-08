@@ -239,7 +239,7 @@ Click the "Add" button in the "Context" card, select the knowledge we just creat
 
 ![Build RAG Robot](images/create-application-6.png)
 
-随后，在提示词的输入框中填写如下的提示词：
+And then, enter the following prompts in the prompt input box:
 
 ```bash
 You are an assistant focused on answering user questions. Your goal is to answer user questions using possible historical conversations and retrieved document snippets.
