@@ -49,9 +49,7 @@ git pull
 
 ### 3. 拉取 Docker 镜像
 
-进入到 dify 的工作目录中的`docker`目录下，执行`docker compose --profile workshop pull`，拉取所需要的镜像，这些镜像不一定都能够顺利拉取，请大家先自行寻求解决方案。
-
-参考命令
+进入到 dify 的工作目录中的`docker`目录下，执行`docker compose --profile workshop pull`，拉取所需要的镜像。若因为网络原因无法拉取镜像，请大家先自行寻求解决方案。参考命令如下：
 
 ```bash
 cd docker
@@ -276,7 +274,7 @@ A:
 您可以使用以下命令启动一个 OceanBase docker 容器：
 
 ```bash
-docker run --name=ob433 -e MODE=mini -e OB_MEMORY_LIMIT=8G -e OB_DATAFILE_SIZE=10G -e OB_CLUSTER_NAME=ailab2024_dify -e OB_SERVER_IP=127.0.0.1 -p 2881:2881 -d quay.io/oceanbase/oceanbase-ce:4.3.3.1-101000012024102216
+docker run --name=ob433 -e MODE=mini -e OB_MEMORY_LIMIT=8G -e OB_DATAFILE_SIZE=10G -e OB_CLUSTER_NAME=ailab2024_dify -e OB_TENANT_PASSWORD=difyai123456 -e OB_SERVER_IP=127.0.0.1 -p 2881:2881 -d quay.io/oceanbase/oceanbase-ce:4.3.3.1-101000012024102216
 ```
 
 如果上述命令执行成功，将会打印容器 ID，如下所示：
@@ -329,7 +327,7 @@ boot success!
 可以使用 mysql 客户端连接到 OceanBase 集群，检查数据库部署情况。
 
 ```bash
-mysql -h127.0.0.1 -P2881 -uroot@test -A -e "show databases"
+mysql -h127.0.0.1 -P2881 -uroot@test -pdifyai123456 -A -e "show databases"
 ```
 
 如果部署成功，您将看到以下输出：
@@ -350,7 +348,7 @@ mysql -h127.0.0.1 -P2881 -uroot@test -A -e "show databases"
 可通过下面的命令将`test`租户下的`ob_vector_memory_limit_percentage`参数设置为非零值，以开启 OceanBase 的向量功能模块。
 
 ```bash
-mysql -h127.0.0.1 -P2881 -uroot@test -A -e "alter system set ob_vector_memory_limit_percentage = 30"
+mysql -h127.0.0.1 -P2881 -uroot@test -pdifyai123456 -A -e "alter system set ob_vector_memory_limit_percentage = 30"
 ```
 
 #### 5. 新增数据库
@@ -358,7 +356,7 @@ mysql -h127.0.0.1 -P2881 -uroot@test -A -e "alter system set ob_vector_memory_li
 OceanBase 数据库初始化之后默认只会创建一个名为`test`的空数据库，为了分别存放结构化数据（满足 alembic 的数据库结构迁移方案要求）和向量数据，我们需要再创建一个数据库。例如可通过下面的命令创建一个新的数据库，名为`dify`。
 
 ```bash
-mysql -h127.0.0.1 -P2881 -uroot@test -A -e "create database dify"
+mysql -h127.0.0.1 -P2881 -uroot@test -pdifyai123456 -A -e "create database dify"
 ```
 
 ### setup-env.sh 脚本进行了哪些工作？
