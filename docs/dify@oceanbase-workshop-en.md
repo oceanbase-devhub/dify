@@ -130,19 +130,17 @@ docker compose --profile workshop pull
 
 In the `docker` directory, there is a `.env.example` file containing several environment variables required for running Dify. We need to fill in some important configuration items.
 
-We provide a script `setup-env.sh` in the `docker/scripts` directory to interactively obtain database connection information, fill it into the `.env` file and complete database connection verification. You just need to execute:
+We provide a script `setup-env-en.sh` in the `docker/scripts` directory to interactively obtain database connection information, fill it into the `.env` file and complete database connection verification. You just need to execute:
 
 ```bash
-bash ./scripts/setup-env.sh
+bash ./scripts/setup-env-en.sh
 ```
 
 And then fill in the database connection information as prompted, the general form is as follows:
 
-![Set up environment variables](images/setup-env.jpg)
-
 If both databases are connected successfully during the database connection detection step, it means that the database connection information is filled in correctly and you can proceed to the next step.
 
-![Set up environment variables successfully](images/setup-env-success.jpg)
+![Set up environment variables successfully](images/setup-env-en.png)
 
 ### 5. Start Dify Containers
 
