@@ -165,23 +165,25 @@ If you see the message `Database migration successful!` in the logs of any of th
 
 By default, the Dify front-end page is started on port `80` of the local machine, which means that you can access the Dify interface by visiting the IP of the current machine. In other words, if I run it on my laptop, I can access the Dify interface by visiting `localhost` in the browser (or the internal IP); if Dify is deployed on a server, you need to access the public IP of the server. The first time you visit the Dify application, you will enter the "Set Admin Account" page, and after setting it up, you can use the account to log in.
 
-![Visit Dify](images/visit-dify-1.png)
-
-![Visit Dify](images/visit-dify-2.png)
-
-![Visit Dify](images/visit-dify-3.png)
+![Visit Dify](images/visit-dify-1-en.png)
 
 ## Steps to Build a Document RAG QA Assistant
 
 In this section, we will use the model service provided by Alibaba Cloud Bailing, and use Dify to build a document RAG QA assistant.
 
-### 1. Obtain the API Key from Model Service Providers like OpenAI
+### 1. Obtain the API Key from Model Service Providers
 
-You can refer to [OpenAI API](https://platform.openai.com/api-keys) to obtain the API Key for OpenAI.
+Dify supports many model service providers, such as OpenAI, Anthropic, SiliconFlow, and Alibaba Cloud Bailing etc.
+
+You can refer to [OpenAI API](https://platform.openai.com/api-keys) to obtain the API Key for OpenAI for example. In this document we take [SiliconFlow](https://siliconflow.cn/) as the model service provider.
 
 ### 2. Configure Model Providers and System Models
 
-After configuration, we need to set up the model providers and system models in Dify. For example, select the `text-embedding-3-large` model as the default embedding model and `gpt-4o` as the default generation model.
+After configuration, we need to refresh the webpage and then set up the model providers and system models in Dify. For example, select the `text-embedding-3-large` model as the default embedding model and `gpt-4o` as the default generation model.
+
+![Set up model provider](images/setup-models-1-en.png)
+
+![Set up system model](images/setup-models-2-en.png)
 
 ### 3. Create a Knowledge and Upload Documents
 
@@ -197,47 +199,27 @@ git clone --single-branch --branch V4.3.4 https://github.com/oceanbase/oceanbase
 
 Back to the homepage, click the "Knowledge" tab in the middle of the top, enter the knowledge management interface, and click "Create Knowledge".
 
-![Configure Knowledge](images/create-knowledge-base-1.png)
-
 In order to save time and reduce the model service call volume, we only process a few documents related to OceanBase vector search, which are located in the `zh-CN/640.ob-vector-search` directory relative to the `oceanbase-doc` directory. We need to upload all the documents in this directory.
 
-![Configure Knowledge](images/create-knowledge-base-2.png)
-
-![Configure Knowledge](images/create-knowledge-base-3.png)
-
-![Configure Knowledge](images/create-knowledge-base-4.png)
+![Configure Knowledge](images/knowledge-1-en.png)
 
 Set Index Mode to "High Quality", click "Save & Process".
 
-![Configure Knowledge](images/create-knowledge-base-5.png)
-
 Dify will prompt that the knowledge has been created, and you may see that some documents have been processed here. Click "Go to Document".
 
-![Configure Knowledge](images/create-knowledge-base-6.png)
-
-![Configure Knowledge](images/create-knowledge-base-7.png)
-
-![Configure Knowledge](images/create-knowledge-base-8.png)
+![Configure Knowledge](images/knowledge-2-en.png)
 
 ### 4. Create a Chat Application and Select the Knowledge
 
 Click the "Studio" tab to enter the application management interface, and click "Create from Blank".
 
-![Build RAG Robot](images/create-application-1.png)
-
-![Build RAG Robot](images/create-application-2.png)
-
 You can fill in the application name by yourself, such as "OB Vector Document Assistant". After entering, click the "Create" button. After the creation is completed, you will enter the application orchestration interface.
 
-![Build RAG Robot](images/create-application-3.png)
+You can configure generative model at the right top corner of the page. Select the generative model you want to use, such as "gpt-4o". In this document, We use "Qwen/Qwen2.5-72B-instruct" as the generative model.
+
+![Build RAG Robot](images/dify-app-1-en.png)
 
 Click the "Add" button in the "Context" card, select the knowledge we just created, and click the "Add" button.
-
-![Build RAG Robot](images/create-application-4.png)
-
-![Build RAG Robot](images/create-application-5.png)
-
-![Build RAG Robot](images/create-application-6.png)
 
 And then, enter the following prompts in the prompt input box:
 
@@ -254,21 +236,17 @@ Answer requirements:
 - Answer the user's question in points and details as much as possible, and the answer should not be too short.
 ```
 
-![Build RAG Robot](images/create-application-7.png)
-
 And you can start debugging the application in the chat box on the right, for example, ask "Please introduce the vector function of OceanBase".
 
-![Build RAG Robot](images/create-application-8.png)
+![Build RAG Robot](images/dify-app-2-en.png)
 
 ### 5. Publish the Application
 
 Click the "Run" button under "Publish" in the upper right corner of the application details to open the exclusive page of the application.
 
-![Publish the Application](images/publish-the-application-1.png)
-
 Click the "Start Chat" button to start chatting.
 
-![Publish the Application](images/publish-the-application-2.png)
+![Publish the Application](images/dify-app-3-en.png)
 
 If you deploy Dify on a server, you can also share the link of the application with your friends and let them try it out!
 
