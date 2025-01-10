@@ -136,6 +136,8 @@ We provide a script `setup-env-en.sh` in the `docker/scripts` directory to inter
 bash ./scripts/setup-env-en.sh
 ```
 
+What you need to pay attention to is that **the `Database Host` should be set to `172.17.0.1`**. (For macOS, set it to `host.docker.internal` instead.)
+
 And then fill in the database connection information as prompted, the general form is as follows:
 
 If both databases are connected successfully during the database connection detection step, it means that the database connection information is filled in correctly and you can proceed to the next step.
